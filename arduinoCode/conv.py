@@ -11,5 +11,5 @@ with open("msg.txt","r") as f:
     file = f.read()
 
 val = conv(file)
-with open("msg.out","w") as f:
-    f.write(str(val).replace("[","{").replace("]","}"))
+with open("msg.dat","w") as f:
+    f.write(str(val).replace("[","{").replace("]","}").replace("'",""))

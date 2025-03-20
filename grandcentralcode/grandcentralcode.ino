@@ -6,7 +6,7 @@
 
 
 int dataindex;
-int data[] = {'1', '0', '1', '0', '1', '1', '1', '0', '0', '1', '0', '1', '1', '1', '0', '1', '1', '1', '1', '1', '0', '1', '0', '1', '0', '1', '0', '1', '1', '0', '1', '0', '1', '1', '1', '1', '1', '1', '0', '1', '0', '1', '1', '1', '0', '1', '0', '0', '0', '1', '1', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0'};
+int data[] = {};
 
 class Clock {
 
@@ -18,20 +18,22 @@ class Clock {
       void toggle(int time) {
         delay(time);
         digitalWrite(CLK, 0);
-        writeData();
+        if (digitalRead(ONLINE) == 1) {
+             writeData();
+        }
         delay(time);
         digitalWrite(CLK, 1);
       }
 };
 Clock clock;
+int addresses[256];
 
 void setup() {
-  // put your setup code here, to run once:
-  int ips[256];
   pinMode(CLK, OUTPUT);
   pinMode(SEND, OUTPUT);
+  pinMode(ERECV, OUTPUT);
+
 }
 void loop() {
-  // put your main code here, to run repeatedly:
   clock.toggle(1000);
 }
