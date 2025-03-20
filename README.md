@@ -2,8 +2,7 @@
 3|- RECV, in
 4|- SEND, out
 5|- CLK, in
-
-
+6|- ERECV (ENABLE RECEIVING)
 
 int ips[256]
 
