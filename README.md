@@ -15,7 +15,9 @@ server::no_ip_found: <br>
 
 
 3bytes <br>
+3bytes <br>
 [to | ip] [from | ip] [0, for now] [length | Byte] [data | bytes] [sum of data high] [sum of data low]
 
+2, 1, NONE, 3, the, sum <br>
 2, 1, NONE, 3, the, sum <br>
 00000010 00000001 00000000 00000011 byte byte byte 00000001 00000011
