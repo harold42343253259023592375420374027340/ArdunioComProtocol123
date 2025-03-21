@@ -7,10 +7,6 @@
 
 //Keeps track of how many bits into the byte we are currently at
 int currentBitOfByte = 0;
-int currentByte[8];
-int charInt = 0;
-
-//char inputMessage[]; // keeps track of the characters translated from bytes (what size should it be??)
 
 char charset[] = {
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
@@ -31,50 +27,54 @@ void setup() {
   pinMode(ESEND,OUTPUT);
 }
 
-void translateIntToChar() {
-  //charset[charInt]
+char translateIntToChar(int charInt) {
+  return charset[charInt];
 }
 
 // you'll never guess what this does
-void translateByteToInt() {
-  int translateValue = 0;
-  if (currentByte[7] == 1){
-    translateValue = translateValue + 1;
-  }
-  if (currentByte[6] == 1){
-    translateValue = translateValue + 2;
-  }
-  if (currentByte[5] == 1){
-    translateValue = translateValue + 4;
-  }
-  if (currentByte[4] == 1){
-    translateValue = translateValue + 8;
-  }
-  if (currentByte[3] == 1){
-    translateValue = translateValue + 16;
-  }
-  if (currentByte[2] == 1){
-    translateValue = translateValue + 32;
-  }
-  if (currentByte[1] == 1){
-    translateValue = translateValue + 64;
-  }
-  if (currentByte[0] == 1){
-    translateValue = translateValue + 128;
-  }
-  charInt = translateValue;
+/* 
+                      Me when i saw your old code
+⡠⠒⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠉⠙⢦
+⡇⠀⡔⠛⠲⡄⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣤⠒⠚⢧⡀
+⠱⣼⠀⢀⡠⠧⠤⣀⢠⠃⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠀⠀⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⣀⣀⡀⠀⠀⣿⣆⠀⠀⡇
+⠀⢹⢀⡎⠀⠀⠀⢈⠏⠀⢠⠚⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⡾⠟⠛⠛⠛⠻⣶⣶⢤⣀⠀⠀⠀⠀⠀⠀⠀⣯⠀⠀⢱⠀⢠⢧⠛⠒⢦⡇
+⠀⠈⣾⠀⠀⡔⠋⠁⠀⢀⡏⠀⠀⠀⠀⠀⠀⠀⡠⠞⠛⣋⣀⣀⠀⠀⠀⣤⣤⣀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠈⢣⠀⢸⢀⠞⠸⣄⠀⠀⢱
+⠀⠀⠘⡆⠀⠃⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⣠⠎⣠⠴⣿⣿⠟⠀⠀⠀⠀⠘⣿⣿⠑⢦⡀⠀⠙⢦⡀⠀⠀⠀⢸⠀⠀⡁⠀⠀⡜⠇⠀⢸
+⠀⠀⠀⢣⠀⠀⠀⠙⢄⢀⠇⠀⠀⠀⠀⡼⠁ ⠈⠀ ⠈⣁⠴⠚⠉⠉⠉⠙⠢⢄⠀⠀⠀⠀⠀⠈⢣⡀⠀⠀⢸⢀⡏⠁⠀⠈⠀⠀⡰⠃
+⠀⠀⠀⠀⠣⡀⠀⠀⢸⠋⠀⠀⠀⠀⣸⠁⠀⠀⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀ ⠱⣄⠀⠀⠀⠀⠀ ⢧⠀⠀⠀⠻⣇⠀⠀⢀⡴⠊
+⠀⠀⠀⠀⠀⠈⠉⠉⠁⠀⠀⠀⠀⢠⡏⠀⠀⠀⢀⠎⠀⢀⣾⣿⣆⠀⣰⣿⣦⠀⠀⠘⣆⠀⠀⠀⠀⢸⡇⠀⠀⠀⠈⠉⠉⠉
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⠀⠀⠀⡎⠀⠀⣾⣿⣿⣿⣶⣿⣿⣿⡄⠀⠀⠘⡆⠀⠀⠀⠀⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠸⠁⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⢰⡀⠀⠀⠀⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡄⠀⢀⡇⠀⠀⠀⢿⠟⠋⠁⠀⠈⠙⠻⡏⠀⠀⠀⠀⣇⠀⠀⠀⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⠀⢸⠀⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⠀⠘⢢⠀⠀⠀⢸⡀⠀⣸⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡇⢸⠀⢀⡜⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⣄⠀⢸⠇⣶
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⠈⠉⡡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠓⠊⠀⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠚⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⡵⠦⠤⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠶⢤⣄⣀⣀⣀⣀⣀⡤⠴⠚⠁
+    -- Finn H 
+    (Harold)
+*/
+int translateByteToInt(int *currentByte) {
+    int translateValue = 0;
+
+    // Loop through each bit, from the most significant bit to the least significant bit
+    for (int i = 0; i < 8; ++i) {
+        translateValue |= (currentByte[i] << (7 - i));
+    }
+
+    return translateValue;
 }
 
 //Create local value variable and put a bit from the recieve pin in it, put that bit into the current bit of the byte we're on,
 //and once we hit the end of the byte, call translateByteToInt and TranslateIntToChar, then reset the current bit.
 void readBits() {
+  int currentByte[8];
   int value;
   value = digitalRead(RECV);
   currentByte[currentBitOfByte] = value;
   currentBitOfByte++;
   if (currentBitOfByte == 8) {
-    translateByteToInt();
-    translateIntToChar();
+    translateIntToChar(translateByteToInt(currentByte));
     currentBitOfByte = 0;
   }
   Serial.println(value);
