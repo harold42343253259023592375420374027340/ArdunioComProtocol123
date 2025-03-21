@@ -3,6 +3,7 @@
 4|- SEND, out <br>
 5|- CLK, in <br>
 6|- ERECV (ENABLE RECEIVING)
+7|- ESEND (ENABLE RECEIVING)
 
 int ips[256]
 
