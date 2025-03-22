@@ -22,9 +22,11 @@ int clock;
 //setup Serial/All pins
 void setup() {
   Serial.begin(9600);
+
   pinMode(CLK, INPUT);
   pinMode(RECV, INPUT);
-  pinMode(ESEND,OUTPUT);
+  pinMode(ERECV,INPUT);
+  pinMode(ONLINE,OUTPUT);
 }
 
 char translateIntToChar(int charInt) {
@@ -70,23 +72,31 @@ int translateByteToInt(int *currentByte) {
 void readBits() {
   int currentByte[8];
   int value;
+  int temp;
   value = digitalRead(RECV);
+  //Serial.println(value);
   currentByte[currentBitOfByte] = value;
   currentBitOfByte++;
   if (currentBitOfByte == 8) {
-    translateIntToChar(translateByteToInt(currentByte));
+    temp = translateByteToInt(currentByte);
+    if (temp == 255) {
+      Serial.println();
+    }
+    Serial.print(translateIntToChar(temp));
     currentBitOfByte = 0;
   }
-  Serial.println(value);
 }
 
 //If the clock value from the server is 1, read a bit.
 void CheckClock() {
   clock = digitalRead(CLK);
+      digitalWrite(ONLINE,HIGH);
 
   if (clock == 1) {
-    readBits();
-    delay(1000);
+    if (digitalRead(ERECV) == 1) {
+      readBits();
+    }
+    delay(500);
 
   }
 }
